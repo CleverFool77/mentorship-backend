@@ -7,6 +7,7 @@ from app.database.models.tasks_list import TasksListModel
 from app.utils.enum_utils import MentorshipRelationState
 from tests.mentorship_relation.relation_base_setup import MentorshipRelationBaseTestCase
 from app.database.sqlalchemy_extension import db
+from app import constants
 
 
 # TODO test combination of parameters while listing relations
@@ -46,7 +47,7 @@ class TestMentorshipRelationListingDAO(MentorshipRelationBaseTestCase):
 
         result = DAO.list_mentorship_relations(user_id=self.first_user.id, accepted=True)
 
-        self.assertEqual(({'message': 'Not implemented.'}, 200), result)
+        self.assertEqual((constants.NOT_IMPLEMENTED, 200), result)
 
     def test_dao_list_mentorship_relation_cancelled(self):
         DAO = MentorshipRelationDAO()
@@ -57,7 +58,7 @@ class TestMentorshipRelationListingDAO(MentorshipRelationBaseTestCase):
 
         result = DAO.list_mentorship_relations(user_id=self.first_user.id, cancelled=True)
 
-        self.assertEqual(({'message': 'Not implemented.'}, 200), result)
+        self.assertEqual((constants.NOT_IMPLEMENTED, 200), result)
 
     def test_dao_list_mentorship_relation_rejected(self):
         DAO = MentorshipRelationDAO()
@@ -68,7 +69,7 @@ class TestMentorshipRelationListingDAO(MentorshipRelationBaseTestCase):
 
         result = DAO.list_mentorship_relations(user_id=self.first_user.id, rejected=True)
 
-        self.assertEqual(({'message': 'Not implemented.'}, 200), result)
+        self.assertEqual((constants.NOT_IMPLEMENTED, 200), result)
 
     def test_dao_list_mentorship_relation_completed(self):
         DAO = MentorshipRelationDAO()
@@ -79,7 +80,7 @@ class TestMentorshipRelationListingDAO(MentorshipRelationBaseTestCase):
 
         result = DAO.list_mentorship_relations(user_id=self.first_user.id, completed=True)
 
-        self.assertEqual(({'message': 'Not implemented.'}, 200), result)
+        self.assertEqual((constants.NOT_IMPLEMENTED, 200), result)
 
     def test_dao_list_mentorship_relation_pending(self):
         DAO = MentorshipRelationDAO()
@@ -90,7 +91,7 @@ class TestMentorshipRelationListingDAO(MentorshipRelationBaseTestCase):
 
         result = DAO.list_mentorship_relations(user_id=self.first_user.id, pending=True)
 
-        self.assertEqual(({'message': 'Not implemented.'}, 200), result)
+        self.assertEqual((constants.NOT_IMPLEMENTED, 200), result)
 
     def test_dao_list_mentorship_relation_all(self):
         DAO = MentorshipRelationDAO()

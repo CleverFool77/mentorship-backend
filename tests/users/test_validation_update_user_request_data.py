@@ -6,15 +6,17 @@ from app.api.validations.user import validate_update_profile_request_data, OCCUP
     ORGANIZATION_MAX_LENGTH, USERNAME_MAX_LENGTH, USERNAME_MIN_LENGTH
 from app.utils.validation_utils import get_length_validation_error_message
 
+from app import constants
+
 
 class TestUpdateUserApiRequestDataValidation(unittest.TestCase):
 
     def test_update_user_request_data_validation_with_no_data(self):
         request_body = dict()
-        expected_result = {"message": "No data for updating profile was sent."}
+        expected_result = constants.NO_DATA_FOR_UPDATING_PROFILE_WAS_SENT
         actual_result = validate_update_profile_request_data(request_body)
 
-        self.assertEqual(expected_result, actual_result)
+        self.assertDictEqual(expected_result, actual_result)
 
     def test_update_user_occupation_request_data_validation(self):
         secure_random = SystemRandom()

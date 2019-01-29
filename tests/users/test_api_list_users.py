@@ -7,6 +7,7 @@ from app.database.sqlalchemy_extension import db
 from tests.base_test_case import BaseTestCase
 from tests.test_utils import get_test_request_header
 from tests.test_data import user1, user2
+from app import constants
 
 
 class TestListUsersApi(BaseTestCase):
@@ -34,11 +35,11 @@ class TestListUsersApi(BaseTestCase):
         db.session.commit()
 
     def test_list_users_api_resource_non_auth(self):
-        expected_response = {'message': 'The authorization token is missing!'}
+        expected_response = constants.AUTHORISATION_TOKEN_IS_MISSING
         actual_response = self.client.get('/users', follow_redirects=True)
 
         self.assertEqual(401, actual_response.status_code)
-        self.assertEqual(expected_response, json.loads(actual_response.data))
+        self.assertDictEqual(expected_response, json.loads(actual_response.data))
 
     def test_list_users_api_resource_auth(self):
         auth_header = get_test_request_header(self.admin_user.id)

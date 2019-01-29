@@ -7,6 +7,7 @@ from app.api.validations.user import validate_user_registration_request_data, NA
 from app.utils.validation_utils import get_length_validation_error_message
 from tests.test_data import user1
 
+from app import constants
 
 class TestUserApiRequestDataValidation(unittest.TestCase):
 
@@ -23,7 +24,7 @@ class TestUserApiRequestDataValidation(unittest.TestCase):
         self.assertEqual(expected_result, actual_result)
 
     def test_user_registration_request_data_missing_name_field(self):
-        expected_result = {"message": "Name field is missing."}
+        expected_result = constants.NAME_FIELD_IS_MISSING
         request_body = dict(
                 username=user1['username'],
                 password=user1['password'],
@@ -31,10 +32,10 @@ class TestUserApiRequestDataValidation(unittest.TestCase):
                 terms_and_conditions_checked=user1['terms_and_conditions_checked'])
         actual_result = validate_user_registration_request_data(request_body)
 
-        self.assertEqual(expected_result, actual_result)
+        self.assertDictEqual(expected_result, actual_result)
 
     def test_user_registration_request_data_missing_username_field(self):
-        expected_result = {"message": "Username field is missing."}
+        expected_result = constants.USERNAME_FIELD_IS_MISSING
         request_body = dict(
             name=user1['name'],
             password=user1['password'],
@@ -42,10 +43,10 @@ class TestUserApiRequestDataValidation(unittest.TestCase):
             terms_and_conditions_checked=user1['terms_and_conditions_checked'])
         actual_result = validate_user_registration_request_data(request_body)
 
-        self.assertEqual(expected_result, actual_result)
+        self.assertDictEqual(expected_result, actual_result)
 
     def test_user_registration_request_data_missing_password_field(self):
-        expected_result = {"message": "Password field is missing."}
+        expected_result = constants.PASSWORD_FIELD_IS_MISSING
         request_body = dict(
             name=user1['name'],
             username=user1['username'],
@@ -53,10 +54,10 @@ class TestUserApiRequestDataValidation(unittest.TestCase):
             terms_and_conditions_checked=user1['terms_and_conditions_checked'])
         actual_result = validate_user_registration_request_data(request_body)
 
-        self.assertEqual(expected_result, actual_result)
+        self.assertDictEqual(expected_result, actual_result)
 
     def test_user_registration_request_data_missing_email_field(self):
-        expected_result = {"message": "Email field is missing."}
+        expected_result = constants.EMAIL_FIELD_IS_MISSING
         request_body = dict(
             name=user1['name'],
             username=user1['username'],
@@ -64,10 +65,10 @@ class TestUserApiRequestDataValidation(unittest.TestCase):
             terms_and_conditions_checked=user1['terms_and_conditions_checked'])
         actual_result = validate_user_registration_request_data(request_body)
 
-        self.assertEqual(expected_result, actual_result)
+        self.assertDictEqual(expected_result, actual_result)
 
     def test_user_registration_request_data_missing_terms_and_conditions_field(self):
-        expected_result = {"message": "Terms and conditions field is missing."}
+        expected_result = constants.TERMS_AND_CONDITIONS_FIELD_IS_MISSING
         request_body = dict(
             name=user1['name'],
             username=user1['username'],
@@ -75,10 +76,10 @@ class TestUserApiRequestDataValidation(unittest.TestCase):
             email=user1['email'])
         actual_result = validate_user_registration_request_data(request_body)
 
-        self.assertEqual(expected_result, actual_result)
+        self.assertDictEqual(expected_result, actual_result)
 
     def test_user_registration_request_data_with_terms_unchecked(self):
-        expected_result = {"message": "Terms and conditions are not checked."}
+        expected_result = constants.TERMS_AND_CONDITIONS_ARE_NOT_CHECKED
         request_body = dict(
                 name=user1['name'],
                 username=user1['username'],
@@ -87,7 +88,7 @@ class TestUserApiRequestDataValidation(unittest.TestCase):
                 terms_and_conditions_checked=False)
         actual_result = validate_user_registration_request_data(request_body)
 
-        self.assertEqual(expected_result, actual_result)
+        self.assertDictEqual(expected_result, actual_result)
 
     def test_user_registration_request_data_name_inferior_to_limit(self):
         secure_random = SystemRandom()

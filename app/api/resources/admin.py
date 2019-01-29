@@ -9,6 +9,7 @@ from app.api.resources.common import auth_header_parser
 
 admin_ns = Namespace('Admins', description='Operations related to Admin users')
 add_models_to_namespace(admin_ns)
+from app import constants
 
 
 @admin_ns.route('admin/new')
@@ -28,9 +29,7 @@ class AssignNewUserAdmin(Resource):
             return AdminDAO.assign_new_user(user.id, data)
 
         else:
-            return {
-                       "message": "You don't have admin status. You can't assign other user as admin."
-                   }, 403
+            return constants.USER_ASSIGN_NOT_ADMIN, 403
 
 
 @admin_ns.route('admin/remove')
@@ -50,6 +49,4 @@ class RevokeUserAdmin(Resource):
             return AdminDAO.revoke_admin_user(user.id, data)
 
         else:
-            return {
-                       "message": "You don't have admin status. You can't revoke other admin user."
-                   }, 403
+            return constants.USER_REVOKE_NOT_ADMIN, 403

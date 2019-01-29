@@ -8,6 +8,7 @@ from app.database.models.mentorship_relation import MentorshipRelationModel
 from app.utils.enum_utils import MentorshipRelationState
 from tests.mentorship_relation.relation_base_setup import MentorshipRelationBaseTestCase
 from tests.test_utils import get_test_request_header
+from app import constants
 
 
 class TestCancelMentorshipRelationApi(MentorshipRelationBaseTestCase):
@@ -47,7 +48,7 @@ class TestCancelMentorshipRelationApi(MentorshipRelationBaseTestCase):
 
             self.assertEqual(200, response.status_code)
             self.assertEqual(MentorshipRelationState.CANCELLED, self.mentorship_relation.state)
-            self.assertEqual({'message': 'Mentorship relation was cancelled successfully.'},
+            self.assertDictEqual(constants.MENTORSHIP_RELATION_WAS_CANCELLED_SUCCESSFULLY,
                              json.loads(response.data))
 
     def test__mentee_cancel_mentorship_relation(self):
@@ -58,7 +59,7 @@ class TestCancelMentorshipRelationApi(MentorshipRelationBaseTestCase):
 
             self.assertEqual(200, response.status_code)
             self.assertEqual(MentorshipRelationState.CANCELLED, self.mentorship_relation.state)
-            self.assertEqual({'message': 'Mentorship relation was cancelled successfully.'},
+            self.assertDictEqual(constants.MENTORSHIP_RELATION_WAS_CANCELLED_SUCCESSFULLY,
                              json.loads(response.data))
 
 

@@ -6,6 +6,7 @@ from app.database.models.tasks_list import TasksListModel
 from app.utils.enum_utils import MentorshipRelationState
 from tests.mentorship_relation.relation_base_setup import MentorshipRelationBaseTestCase
 from app.database.sqlalchemy_extension import db
+from app import constants
 
 
 # TODO test when a user is in a current relation and tries to accept another relation
@@ -44,7 +45,7 @@ class TestMentorshipRelationAcceptRequestDAO(MentorshipRelationBaseTestCase):
 
         result = DAO.accept_request(self.first_user.id, 123)
 
-        self.assertEqual(({'message': 'This mentorship relation request does not exist.'}, 404), result)
+        self.assertEqual((constants.MENTORSHIP_RELATION_REQUEST_DOES_NOT_EXIST, 404), result)
         self.assertEqual(MentorshipRelationState.PENDING, self.mentorship_relation.state)
 
     def test_dao_requester_tries_to_accept_mentorship_request(self):
@@ -52,7 +53,7 @@ class TestMentorshipRelationAcceptRequestDAO(MentorshipRelationBaseTestCase):
 
         result = DAO.accept_request(self.first_user.id, self.mentorship_relation.id)
 
-        self.assertEqual(({'message': 'You cannot accept a mentorship request sent by yourself.'}, 400), result)
+        self.assertEqual((constants.CANT_ACCEPT_MENTOR_REQ_SENT_BY_USER, 400), result)
         self.assertEqual(MentorshipRelationState.PENDING, self.mentorship_relation.state)
 
     def test_dao_receiver_accepts_mentorship_request(self):
@@ -60,7 +61,7 @@ class TestMentorshipRelationAcceptRequestDAO(MentorshipRelationBaseTestCase):
 
         result = DAO.accept_request(self.second_user.id, self.mentorship_relation.id)
 
-        self.assertEqual(({'message': 'Mentorship relation was accepted successfully.'}, 200), result)
+        self.assertEqual((constants.MENTORSHIP_RELATION_WAS_ACCEPTED_SUCCESSFULLY, 200), result)
         self.assertEqual(MentorshipRelationState.ACCEPTED, self.mentorship_relation.state)
 
     def test_dao_sender_does_not_exist_mentorship_request(self):
@@ -68,7 +69,7 @@ class TestMentorshipRelationAcceptRequestDAO(MentorshipRelationBaseTestCase):
 
         result = DAO.accept_request(123, self.mentorship_relation.id)
 
-        self.assertEqual(({'message': 'User does not exist.'}, 404), result)
+        self.assertEqual((constants.USER_DOES_NOT_EXIST, 404), result)
         self.assertEqual(MentorshipRelationState.PENDING, self.mentorship_relation.state)
 
     def test_dao_mentorship_request_is_not_in_pending_state(self):
@@ -79,25 +80,25 @@ class TestMentorshipRelationAcceptRequestDAO(MentorshipRelationBaseTestCase):
         db.session.commit()
 
         result = DAO.accept_request(self.second_user.id, self.mentorship_relation.id)
-        self.assertEqual(({'message': 'This mentorship relation is not in the pending state.'}, 400), result)
+        self.assertEqual((constants.NOT_PENDING_STATE_RELATION, 400), result)
 
         self.mentorship_relation.state = MentorshipRelationState.COMPLETED
         db.session.add(self.mentorship_relation)
         db.session.commit()
 
         result = DAO.accept_request(self.second_user.id, self.mentorship_relation.id)
-        self.assertEqual(({'message': 'This mentorship relation is not in the pending state.'}, 400), result)
+        self.assertEqual((constants.NOT_PENDING_STATE_RELATION, 400), result)
 
         self.mentorship_relation.state = MentorshipRelationState.CANCELLED
         db.session.add(self.mentorship_relation)
         db.session.commit()
 
         result = DAO.accept_request(self.second_user.id, self.mentorship_relation.id)
-        self.assertEqual(({'message': 'This mentorship relation is not in the pending state.'}, 400), result)
+        self.assertEqual((constants.NOT_PENDING_STATE_RELATION, 400), result)
 
         self.mentorship_relation.state = MentorshipRelationState.REJECTED
         db.session.add(self.mentorship_relation)
         db.session.commit()
 
         result = DAO.accept_request(self.second_user.id, self.mentorship_relation.id)
-        self.assertEqual(({'message': 'This mentorship relation is not in the pending state.'}, 400), result)
+        self.assertEqual((constants.NOT_PENDING_STATE_RELATION, 400), result)

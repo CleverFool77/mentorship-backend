@@ -5,6 +5,7 @@ from tests.test_data import user1
 from app.database.models.user import UserModel
 from app.api.dao.admin import AdminDAO
 from app.database.sqlalchemy_extension import db
+from app import constants
 
 
 class TestAdminDao(BaseTestCase):
@@ -55,7 +56,7 @@ class TestAdminDao(BaseTestCase):
 
         dao_result = dao.assign_new_user(2, data)
 
-        self.assertEqual(({"message": "You cannot assign yourself as an Admin."}, 403), dao_result)
+        self.assertEqual((constants.USER_CANNOT_BE_ASSIGNED_ADMIN_BY_USER, 403), dao_result)
 
     def test_dao_revoke_admin_role_to_valid_user(self):
         dao = AdminDAO()
@@ -92,7 +93,7 @@ class TestAdminDao(BaseTestCase):
 
         dao_result = dao.revoke_admin_user(1, data)
 
-        self.assertEqual(({"message": "User does not exist."}, 404), dao_result)
+        self.assertEqual((constants.USER_DOES_NOT_EXIST, 404), dao_result)
 
     def test_dao_revoke_admin_role_to_non_admin_user(self):
         dao = AdminDAO()
@@ -115,7 +116,7 @@ class TestAdminDao(BaseTestCase):
 
         dao_result = dao.revoke_admin_user(1, data)
 
-        self.assertEqual(({"message": "User is not an Admin."}, 400), dao_result)
+        self.assertEqual((constants.USER_IS_NOT_AN_ADMIN, 400), dao_result)
 
     def test_dao_revoke_admin_role_to_myself(self):
         dao = AdminDAO()
@@ -126,7 +127,7 @@ class TestAdminDao(BaseTestCase):
 
         dao_result = dao.revoke_admin_user(1, data)
 
-        self.assertEqual(({"message": "You cannot revoke your admin status."}, 403), dao_result)
+        self.assertEqual((constants.USER_CANNOT_REVOKE_ADMIN_STATUS, 403), dao_result)
 
 
 if __name__ == '__main__':

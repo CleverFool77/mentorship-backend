@@ -8,6 +8,7 @@ from app.database.sqlalchemy_extension import db
 from app.utils.enum_utils import MentorshipRelationState
 from tests.base_test_case import BaseTestCase
 from tests.test_utils import get_test_request_header
+from app import constants
 
 
 class TestHomeStatisticsApi(BaseTestCase):
@@ -25,16 +26,16 @@ class TestHomeStatisticsApi(BaseTestCase):
         db.session.commit()
 
     def test_relations_non_auth(self):
-        expected_response = {'message': 'The authorization token is missing!'}
+        expected_response = constants.AUTHORISATION_TOKEN_IS_MISSING
         actual_response = self.client.get('/home', follow_redirects=True)
         self.assertEqual(401, actual_response.status_code)
-        self.assertEqual(expected_response, json.loads(actual_response.data))
+        self.assertDictEqual(expected_response, json.loads(actual_response.data))
 
     def test_relations_invalid_id(self):
         auth_header = get_test_request_header(None)  # Supply invalid user ID for the test
         actual_response = self.client.get('/home', follow_redirects=True, headers=auth_header)
         self.assertEqual(404, actual_response.status_code)
-        self.assertEqual({'message': 'User not found'}, json.loads(actual_response.data))
+        self.assertEqual(constants.USER_NOT_FOUND, json.loads(actual_response.data))
 
     def test_pending_requests_auth(self):
         start_date = datetime.now()

@@ -7,6 +7,7 @@ from app.database.models.tasks_list import TasksListModel
 from app.database.sqlalchemy_extension import db
 from app.utils.enum_utils import MentorshipRelationState
 from tests.mentorship_relation.relation_base_setup import MentorshipRelationBaseTestCase
+from app import constants
 
 
 class TestListMentorshipRelationsDAO(MentorshipRelationBaseTestCase):
@@ -78,7 +79,7 @@ class TestListMentorshipRelationsDAO(MentorshipRelationBaseTestCase):
 
     def test_dao_list_non_existing_current_mentorship_relation(self):
         result = MentorshipRelationDAO.list_current_mentorship_relation(user_id=self.admin_user.id)
-        expected_response = ({'message': 'You are not in a current mentorship relation.'}, 200)
+        expected_response = (constants.NOT_IN_MENTORED_RELATION_CURRENTLY, 200)
 
         self.assertEqual(expected_response, result)
 

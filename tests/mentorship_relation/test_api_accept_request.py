@@ -8,7 +8,7 @@ from app.database.models.mentorship_relation import MentorshipRelationModel
 from app.utils.enum_utils import MentorshipRelationState
 from tests.mentorship_relation.relation_base_setup import MentorshipRelationBaseTestCase
 from tests.test_utils import get_test_request_header
-
+from app import constants
 
 class TestAcceptMentorshipRequestApi(MentorshipRelationBaseTestCase):
 
@@ -44,7 +44,7 @@ class TestAcceptMentorshipRequestApi(MentorshipRelationBaseTestCase):
 
             self.assertEqual(200, response.status_code)
             self.assertEqual(MentorshipRelationState.ACCEPTED, self.mentorship_relation.state)
-            self.assertEqual({'message': 'Mentorship relation was accepted successfully.'},
+            self.assertDictEqual(constants.MENTORSHIP_RELATION_WAS_ACCEPTED_SUCCESSFULLY,
                              json.loads(response.data))
 
 

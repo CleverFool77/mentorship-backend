@@ -12,6 +12,7 @@ from app.api.resources.common import auth_header_parser
 
 users_ns = Namespace('Users', description='Operations related to users')
 add_models_to_namespace(users_ns)
+from app import constants
 
 DAO = UserDAO()  # User data access object
 
@@ -49,11 +50,11 @@ class OtherUser(Resource):
         """
         # Validate arguments
         if not OtherUser.validate_param(user_id):
-            return {"message": "User id is not valid."}, 400
+            return constants.USER_ID_IS_NOT_VALID, 400
 
         requested_user = DAO.get_user(user_id)
         if requested_user is None:
-            return {"message": "User does not exist."}, 404
+            return constants.USER_DOES_NOT_EXIST, 404
         else:
             return marshal(requested_user, public_user_api_model), 201
 
@@ -203,14 +204,14 @@ class UserResendEmailConfirmation(Resource):
 
         user = DAO.get_user_by_email(data['email'])
         if user is None:
-            return {"message": "You are not registered in the system."}, 404
+            return constants.USER_IS_NOT_REGISTERED_IN_THE_SYSTEM, 404
 
         if user.is_email_verified:
-            return {"message": "You already confirm your email."}, 403
+            return constants.USER_ALREADY_CONFIRMED_ACCOUNT, 403
 
         send_email_verification_message(user.name, data['email'])
 
-        return {"message": "Check your email, a new verification email was sent."}, 200
+        return constants.EMAIL_VERIFICATION_MESSAGE, 200
 
 
 @users_ns.route('login')
@@ -236,17 +237,17 @@ class LoginUser(Resource):
         password = request.json.get('password', None)
 
         if not username:
-            return {'message': 'The field username is missing.'}, 400
+            return constants.USERNAME_FIELD_IS_MISSING, 400
         if not password:
-            return {'message': 'The field password is missing.'}, 400
+            return constants.PASSWORD_FIELD_IS_MISSING, 400
 
         user = DAO.authenticate(username, password)
 
         if not user:
-            return {'message': 'Username or password is wrong.'}, 404
+            return constants.WRONG_USERNAME_OR_PASSWORD, 404
 
         if not user.is_email_verified:
-            return {'message': 'Please verify your email before login.'}, 403
+            return constants.USER_HAS_NOT_VERIFIED_EMAIL_BEFORE_LOGIN, 403
 
         access_token = create_access_token(identity=user.id)
 
@@ -256,7 +257,7 @@ class LoginUser(Resource):
         return {
             'access_token': access_token,
             'expiry': expiry.timestamp()
-        }, 200
+       }, 200
 
 
 @users_ns.route('home')
@@ -276,6 +277,6 @@ class UserHomeStatistics(Resource):
         user_id = get_jwt_identity()
         stats = DAO.get_user_statistics(user_id)
         if not stats:
-            return {'message': 'User not found'}, 404
+            return constants.USER_NOT_FOUND, 404
 
         return stats, 200

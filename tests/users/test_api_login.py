@@ -5,6 +5,7 @@ from flask import json
 from app.database.sqlalchemy_extension import db
 from tests.base_test_case import BaseTestCase
 from app.database.models.user import UserModel
+from app import constants
 
 # Testing User API resources
 #
@@ -53,7 +54,7 @@ class TestUserLoginApi(BaseTestCase):
             self.assertIsNone(response.json.get('access_token'))
             self.assertIsNone(response.json.get('expiry'))
             self.assertEqual(1, len(response.json))
-            self.assertEqual('Please verify your email before login.', response.json.get('message', None))
+            self.assertEqual(constants.USER_HAS_NOT_VERIFIED_EMAIL_BEFORE_LOGIN, response.json)
             self.assertEqual(403, response.status_code)
 
     def test_user_login_verified_user(self):
