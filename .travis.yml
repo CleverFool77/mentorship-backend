@@ -8,6 +8,7 @@ before_script:
 install:
   - pip3 install -r requirements.txt
 script:
+  - pylint app/
   - python -m unittest discover tests -v
 after_success:
   - ./deploy.sh
